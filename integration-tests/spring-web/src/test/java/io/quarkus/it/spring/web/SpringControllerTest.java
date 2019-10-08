@@ -1,7 +1,6 @@
-package io.quarkus.it.spring.web;
+    package io.quarkus.it.spring.web;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +15,13 @@ public class SpringControllerTest {
         RestAssured.when().get("/greeting/json/hello").then()
                 .contentType("application/json")
                 .body(containsString("hello"));
+    }
+
+    @Test
+    public void testJsonResult2() {
+        RestAssured.when().get("/greeting/json/hello?suffix=000").then()
+                .contentType("application/json")
+                .body(containsString("hello000"));
     }
 
     @Test

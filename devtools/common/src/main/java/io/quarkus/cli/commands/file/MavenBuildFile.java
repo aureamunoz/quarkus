@@ -86,11 +86,22 @@ public class MavenBuildFile extends BuildFile {
     }
 
     @Override
-    public void completeFile(String groupId, String artifactId, String version) throws IOException {
+    public void completeFile(String groupId, String artifactId, String version, boolean addCompilerParameters)
+            throws IOException {
         addVersionProperty();
         addBom();
         addMainPluginConfig();
         addNativeProfile();
+        if (addCompilerParameters) {
+            addCompilerPluginConfig();
+        }
+    }
+
+    private void addCompilerPluginConfig() throws IOException {
+
+        Build build = createBuildSectionIfRequired();
+        Plugin plugin = plugin("org.apache.maven.plugins", "maven-compiler-plugin", "3.8.1");
+        build.getPlugins().add(plugin);
     }
 
     private void addBom() throws IOException {

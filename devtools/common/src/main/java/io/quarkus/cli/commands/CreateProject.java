@@ -106,8 +106,10 @@ public class CreateProject {
         context.put(SOURCE_TYPE, sourceType);
         context.put(BUILD_FILE, getBuildFile());
 
+        boolean isSpring = false;
         if (extensions != null && extensions.stream().anyMatch(e -> e.toLowerCase().contains("spring-web"))) {
             context.put(IS_SPRING, Boolean.TRUE);
+            isSpring = true;
         }
 
         if (className != null) {
@@ -125,7 +127,7 @@ public class CreateProject {
 
         // call close at the end to save file
         try (BuildFile buildFile = getBuildFile()) {
-            buildFile.completeFile(groupId, artifactId, version);
+            buildFile.completeFile(groupId, artifactId, version, isSpring);
         }
 
         return true;
