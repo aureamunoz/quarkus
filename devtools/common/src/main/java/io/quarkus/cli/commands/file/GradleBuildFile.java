@@ -46,7 +46,7 @@ public class GradleBuildFile extends BuildFile {
             throws IOException {
         init();
         completeSettingsContent(artifactId);
-        completeBuildContent(groupId, version);
+        completeBuildContent(groupId, version, addCompilerParameters);
         completeProperties();
     }
 
@@ -65,7 +65,7 @@ public class GradleBuildFile extends BuildFile {
         }
     }
 
-    private void completeBuildContent(String groupId, String version) {
+    private void completeBuildContent(String groupId, String version, boolean addCompilerParameters) {
         StringBuilder res = new StringBuilder(buildContent);
         if (!buildContent.contains("io.quarkus:quarkus-gradle-plugin")) {
             res.append(System.lineSeparator());
@@ -81,6 +81,14 @@ public class GradleBuildFile extends BuildFile {
         }
         if (!buildContent.contains("apply plugin: 'io.quarkus'") && !buildContent.contains("id 'io.quarkus'")) {
             res.append(System.lineSeparator()).append("apply plugin: 'io.quarkus'").append(System.lineSeparator());
+        }
+        if (!buildContent.contains("apply plugin: 'java'") && addCompilerParameters) {
+            res.append(System.lineSeparator());
+            res.append("apply plugin: 'java'").append(System.lineSeparator());
+            res.append("compileJava {").append(System.lineSeparator());
+            res.append("    options.compilerArgs << '-parameters'").append(System.lineSeparator());
+            res.append(" }").append(System.lineSeparator());
+
         }
         if (!containsBOM()) {
             res.append(System.lineSeparator());

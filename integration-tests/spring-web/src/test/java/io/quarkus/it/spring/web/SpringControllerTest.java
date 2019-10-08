@@ -1,4 +1,4 @@
-    package io.quarkus.it.spring.web;
+package io.quarkus.it.spring.web;
 
 import static org.hamcrest.Matchers.*;
 

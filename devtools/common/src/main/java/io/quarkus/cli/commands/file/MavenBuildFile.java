@@ -98,9 +98,9 @@ public class MavenBuildFile extends BuildFile {
     }
 
     private void addCompilerPluginConfig() throws IOException {
-
         Build build = createBuildSectionIfRequired();
-        Plugin plugin = plugin("org.apache.maven.plugins", "maven-compiler-plugin", "3.8.1");
+        Plugin plugin = plugin("org.apache.maven.plugins", "maven-compiler-plugin");
+        plugin.setConfiguration(configuration(new Element("parameters", "true")));
         build.getPlugins().add(plugin);
     }
 
