@@ -10,6 +10,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 
 import org.jboss.jandex.DotName;
+import org.springframework.security.access.annotation.Secured;
 
 import io.quarkus.arc.processor.InterceptorBindingRegistrar;
 import io.quarkus.security.Authenticated;
@@ -27,6 +28,7 @@ public class SecurityAnnotationsRegistrar implements InterceptorBindingRegistrar
         SECURITY_BINDINGS.put(DotName.createSimple(Authenticated.class.getName()), Collections.emptySet());
         SECURITY_BINDINGS.put(DotName.createSimple(DenyAll.class.getName()), Collections.emptySet());
         SECURITY_BINDINGS.put(DotName.createSimple(PermitAll.class.getName()), Collections.emptySet());
+        SECURITY_BINDINGS.put(DotName.createSimple(Secured.class.getName()), Collections.emptySet());
     }
 
     @Override

@@ -6,6 +6,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
+import org.springframework.security.access.annotation.Secured;
+
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
  */
@@ -28,5 +30,10 @@ public class SubclassWithDenyAll extends BeanWithSecuredMethods {
     @RolesAllowed("admin")
     public String restrictedOnMethod() {
         return "restrictedOnMethod";
+    }
+
+    @Secured("admin")
+    public String restrictedWithSecuredOnMethod() {
+        return "restrictedWithSecuredOnMethod";
     }
 }

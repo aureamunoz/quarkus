@@ -19,6 +19,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.springframework.security.access.annotation.Secured;
+
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.ForbiddenException;
 import io.quarkus.security.UnauthorizedException;
@@ -31,7 +33,7 @@ import io.quarkus.security.identity.SecurityIdentity;
 public class SecurityConstrainer {
 
     private static final List<Class<? extends Annotation>> SECURITY_ANNOTATIONS = asList(Authenticated.class, DenyAll.class,
-            PermitAll.class, RolesAllowed.class);
+            PermitAll.class, RolesAllowed.class, Secured.class);
 
     private final Map<Method, Optional<Check>> checkForMethod = new ConcurrentHashMap<>();
 
@@ -75,6 +77,10 @@ public class SecurityConstrainer {
         if (securityAnnotation instanceof RolesAllowed) {
             RolesAllowed rolesAllowed = (RolesAllowed) securityAnnotation;
             return Optional.of(new RolesAllowedCheck(rolesAllowed.value()));
+        }
+        if (securityAnnotation instanceof Secured) {
+            Secured secured = (Secured) securityAnnotation;
+            return Optional.of(new RolesAllowedCheck(secured.value()));
         }
         if (securityAnnotation instanceof PermitAll) {
             return Optional.of(new PermitAllCheck());

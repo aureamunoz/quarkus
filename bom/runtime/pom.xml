@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>quarkus-parent</artifactId>
         <groupId>io.quarkus</groupId>
@@ -160,6 +160,7 @@
         <wiremock.version>2.24.1</wiremock.version>
         <spring.version>5.1.8.RELEASE</spring.version>
         <spring-data.version>2.1.9.RELEASE</spring-data.version>
+        <spring-security.version>5.2.0.RELEASE</spring-security.version>
         <mvel2.version>2.4.4.Final</mvel2.version>
         <mockito.version>3.0.0</mockito.version>
         <jna.version>5.3.1</jna.version>
@@ -340,7 +341,7 @@
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-flyway</artifactId>
                 <version>${project.version}</version>
-             </dependency>
+            </dependency>
             <dependency>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-hibernate-orm</artifactId>
@@ -1723,9 +1724,9 @@
                 <version>${wildfly-elytron.version}</version>
             </dependency>
             <dependency>
-              <groupId>org.wildfly.security</groupId>
-              <artifactId>wildfly-elytron-realm-jdbc</artifactId>
-              <version>${wildfly-elytron.version}</version>
+                <groupId>org.wildfly.security</groupId>
+                <artifactId>wildfly-elytron-realm-jdbc</artifactId>
+                <version>${wildfly-elytron.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.security</groupId>
@@ -2331,7 +2332,6 @@
             </dependency>
 
 
-
             <dependency>
                 <groupId>org.webjars</groupId>
                 <artifactId>swagger-ui</artifactId>
@@ -2431,7 +2431,34 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-expression</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- Keycloak -->
             <dependency>
                 <groupId>org.keycloak</groupId>

@@ -5,6 +5,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
+import org.springframework.security.access.annotation.Secured;
+
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
  */
@@ -16,6 +18,11 @@ public class BeanWithSecuredMethods {
     @DenyAll
     public String forbidden() {
         return "shouldBeDenied";
+    }
+
+    @Secured("aurita")
+    public String springSecuredMethod() {
+        return "accessibleWithSecuredForAdminOnly";
     }
 
     @RolesAllowed("admin")

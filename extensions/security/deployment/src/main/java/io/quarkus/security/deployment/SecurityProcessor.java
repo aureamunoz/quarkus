@@ -21,12 +21,7 @@ import io.quarkus.security.runtime.IdentityProviderManagerCreator;
 import io.quarkus.security.runtime.SecurityBuildTimeConfig;
 import io.quarkus.security.runtime.SecurityIdentityAssociation;
 import io.quarkus.security.runtime.SecurityIdentityProxy;
-import io.quarkus.security.runtime.interceptor.AuthenticatedInterceptor;
-import io.quarkus.security.runtime.interceptor.DenyAllInterceptor;
-import io.quarkus.security.runtime.interceptor.PermitAllInterceptor;
-import io.quarkus.security.runtime.interceptor.RolesAllowedInterceptor;
-import io.quarkus.security.runtime.interceptor.SecurityConstrainer;
-import io.quarkus.security.runtime.interceptor.SecurityHandler;
+import io.quarkus.security.runtime.interceptor.*;
 
 public class SecurityProcessor {
 
@@ -79,7 +74,7 @@ public class SecurityProcessor {
             BuildProducer<AdditionalBeanBuildItem> beans) {
         registrars.produce(new InterceptorBindingRegistrarBuildItem(new SecurityAnnotationsRegistrar()));
         Class[] interceptors = { AuthenticatedInterceptor.class, DenyAllInterceptor.class, PermitAllInterceptor.class,
-                RolesAllowedInterceptor.class };
+                RolesAllowedInterceptor.class, SecuredInterceptor.class };
         beans.produce(new AdditionalBeanBuildItem(interceptors));
         beans.produce(new AdditionalBeanBuildItem(SecurityHandler.class, SecurityConstrainer.class));
     }

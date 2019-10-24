@@ -73,6 +73,13 @@ public class CDIAccessDefaultTest {
     }
 
     @Test
+    public void shouldRestrictAccessToSecuredAnnotationSpecificRole() {
+        assertFailureFor(() -> bean.springSecuredMethod(), UnauthorizedException.class, ANONYMOUS);
+        assertFailureFor(() -> bean.springSecuredMethod(), ForbiddenException.class, USER);
+        assertSuccess(() -> bean.springSecuredMethod(), "accessibleWithSecuredForAdminOnly", ADMIN);
+    }
+
+    @Test
     public void shouldFailToAccessForbiddenOnClass() {
         assertFailureFor(() -> denyAllBean.noAdditionalConstraints(), UnauthorizedException.class, ANONYMOUS);
         assertFailureFor(() -> denyAllBean.noAdditionalConstraints(), ForbiddenException.class, USER, ADMIN);
@@ -88,6 +95,13 @@ public class CDIAccessDefaultTest {
         assertFailureFor(() -> denyAllBean.restrictedOnMethod(), UnauthorizedException.class, ANONYMOUS);
         assertFailureFor(() -> denyAllBean.restrictedOnMethod(), ForbiddenException.class, USER);
         assertSuccess(() -> denyAllBean.restrictedOnMethod(), "restrictedOnMethod", ADMIN);
+    }
+
+    @Test
+    public void shouldRestrictAccessToSecuredRoleOnMethod() {
+        assertFailureFor(() -> denyAllBean.restrictedWithSecuredOnMethod(), UnauthorizedException.class, ANONYMOUS);
+        assertFailureFor(() -> denyAllBean.restrictedWithSecuredOnMethod(), ForbiddenException.class, USER);
+        assertSuccess(() -> denyAllBean.restrictedWithSecuredOnMethod(), "restrictedWithSecuredOnMethod", ADMIN);
     }
 
     @Test
@@ -117,6 +131,13 @@ public class CDIAccessDefaultTest {
         assertFailureFor(() -> permitAllBean.restrictedOnMethod(), UnauthorizedException.class, ANONYMOUS);
         assertFailureFor(() -> permitAllBean.restrictedOnMethod(), ForbiddenException.class, USER);
         assertSuccess(() -> permitAllBean.restrictedOnMethod(), "restrictedOnMethod", ADMIN);
+    }
+
+    @Test
+    public void shouldRestrictAccessForSecuredRestrictedMethodOfPermitAllClass() {
+        assertFailureFor(() -> permitAllBean.restrictedWithSecuredOnMethod(), UnauthorizedException.class, ANONYMOUS);
+        assertFailureFor(() -> permitAllBean.restrictedWithSecuredOnMethod(), ForbiddenException.class, USER);
+        assertSuccess(() -> permitAllBean.restrictedWithSecuredOnMethod(), "restrictedWithSecuredOnMethod", ADMIN);
     }
 
     @Test
