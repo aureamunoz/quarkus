@@ -28,7 +28,7 @@ public class SecurityAnnotationsRegistrar implements InterceptorBindingRegistrar
         SECURITY_BINDINGS.put(DotName.createSimple(Authenticated.class.getName()), Collections.emptySet());
         SECURITY_BINDINGS.put(DotName.createSimple(DenyAll.class.getName()), Collections.emptySet());
         SECURITY_BINDINGS.put(DotName.createSimple(PermitAll.class.getName()), Collections.emptySet());
-        SECURITY_BINDINGS.put(DotName.createSimple(Secured.class.getName()), Collections.emptySet());
+        SECURITY_BINDINGS.put(DotName.createSimple(Secured.class.getName()), Collections.singleton("value"));
     }
 
     @Override

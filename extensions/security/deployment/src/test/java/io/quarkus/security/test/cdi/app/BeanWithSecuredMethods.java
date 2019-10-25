@@ -20,7 +20,7 @@ public class BeanWithSecuredMethods {
         return "shouldBeDenied";
     }
 
-    @Secured("aurita")
+    @Secured(value = "admin")
     public String springSecuredMethod() {
         return "accessibleWithSecuredForAdminOnly";
     }
