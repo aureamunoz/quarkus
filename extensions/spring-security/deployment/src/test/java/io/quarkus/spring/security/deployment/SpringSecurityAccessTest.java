@@ -1,6 +1,7 @@
 package io.quarkus.spring.security.deployment;
 
 import static io.quarkus.security.test.utils.IdentityMock.*;
+import static io.quarkus.spring.security.deployment.SecurityTestUtils.assertFailureFor;
 import static io.quarkus.spring.security.deployment.SecurityTestUtils.assertSuccess;
 
 import javax.inject.Inject;
@@ -11,6 +12,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import io.quarkus.security.ForbiddenException;
+import io.quarkus.security.UnauthorizedException;
 import io.quarkus.test.QuarkusUnitTest;
 
 public class SpringSecurityAccessTest {
@@ -68,6 +71,13 @@ public class SpringSecurityAccessTest {
     public void shouldAccessInheritedAllowedMethod() {
         //        Assertions.assertEquals(() -> denyAllBean.unsecuredMethod(), expectedResult);
         assertSuccess(() -> sonBean.unsecuredMethod(), "accessibleForAll", ANONYMOUS, USER, ADMIN);
+    }
+
+    @Test
+    public void shouldRestrictAccessToSpecificRole() {
+        assertFailureFor(() -> bean.securedMethod(), UnauthorizedException.class, ANONYMOUS);
+        assertFailureFor(() -> bean.securedMethod(), ForbiddenException.class, USER);
+        assertSuccess(() -> bean.securedMethod(), "accessibleForAdminOnly", ADMIN);
     }
 
     //    @Test
