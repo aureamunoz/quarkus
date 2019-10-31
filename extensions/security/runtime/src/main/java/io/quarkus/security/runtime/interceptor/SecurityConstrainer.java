@@ -4,12 +4,7 @@ import static java.util.Arrays.asList;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -18,10 +13,11 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.interceptor.InvocationContext;
 
+import io.quarkus.security.AnnotationChecksService;
 import io.quarkus.security.Authenticated;
-import io.quarkus.security.ForbiddenException;
-import io.quarkus.security.UnauthorizedException;
+import io.quarkus.security.Check;
 import io.quarkus.security.identity.SecurityIdentity;
 
 /**
@@ -38,24 +34,36 @@ public class SecurityConstrainer {
     @Inject
     SecurityIdentity identity;
 
-    public void checkRoles(Method method, Collection<Annotation> interceptorBindings) {
-        Optional<Check> check = getCheck(method, interceptorBindings);
+    public void checkRoles(InvocationContext ic, Collection<Annotation> interceptorBindings) {
+
+        Iterator<AnnotationChecksService> iterator = ServiceLoader.load(AnnotationChecksService.class).iterator();
+
+        //        while (iterator.hasNext()) {
+        AnnotationChecksService annotationChecksService = iterator.next();
+        Annotation annotation = getAnnotation(ic, interceptorBindings);
+        Optional<Check> check = annotationChecksService.checkForAnnotation(annotation);
+        //            Optional<Check> check = getCheck(method, interceptorBindings);
         if (check.isPresent()) {
             check.get().apply(identity);
         }
+        //        }
+
+        //
     }
 
-    private Optional<Check> getCheck(Method method, Collection<Annotation> interceptorBindings) {
-        Optional<Check> check = checkForMethod.get(method);
-        if (check == null) {
-            // intentionally no synchronization
-            check = determineSecurityCheck(method, interceptorBindings);
-            checkForMethod.put(method, check);
-        }
-        return check;
-    }
+    //    private Optional<Check> getCheck(Method method, Collection<Annotation> interceptorBindings) {
+    //        Optional<Check> check = checkForMethod.get(method);
+    //        if (check == null) {
+    //            // intentionally no synchronization
+    //            check = determineSecurityCheck(method, interceptorBindings);
+    //            checkForMethod.put(method, check);
+    //        }
+    //        return check;
+    //    }
 
-    private Optional<Check> determineSecurityCheck(Method method, Collection<Annotation> interceptorBindings) {
+    private Annotation getAnnotation(InvocationContext ic, Collection<Annotation> interceptorBindings) {
+        Method method = ic.getMethod();
+        //        Class<?> methodClass = (Class<?>) ic.getTarget();
         Annotation securityAnnotation = determineSecurityAnnotation(method.getDeclaredAnnotations(), method::toString);
         if (securityAnnotation == null) {
             Class<?> declaringClass = method.getDeclaringClass();
@@ -65,25 +73,30 @@ public class SecurityConstrainer {
         if (securityAnnotation == null) {
             securityAnnotation = determineSecurityAnnotationFromBindings(interceptorBindings, method::toString);
         }
-        return checkForAnnotation(securityAnnotation);
+        return securityAnnotation;
     }
 
-    private Optional<Check> checkForAnnotation(Annotation securityAnnotation) {
-        if (securityAnnotation instanceof DenyAll) {
-            return Optional.of(new DenyAllCheck());
-        }
-        if (securityAnnotation instanceof RolesAllowed) {
-            RolesAllowed rolesAllowed = (RolesAllowed) securityAnnotation;
-            return Optional.of(new RolesAllowedCheck(rolesAllowed.value()));
-        }
-        if (securityAnnotation instanceof PermitAll) {
-            return Optional.of(new PermitAllCheck());
-        }
-        if (securityAnnotation instanceof Authenticated) {
-            return Optional.of(new AuthenticatedCheck());
-        }
-        return Optional.empty();
-    }
+    //    private Optional<Check> determineSecurityCheck(Method method, Collection<Annotation> interceptorBindings) {
+    //        Annotation securityAnnotation = getAnnotation(method,interceptorBindings);
+    //        return checkForAnnotation(securityAnnotation);
+    //    }
+
+    //    private Optional<Check> checkForAnnotation(Annotation securityAnnotation) {
+    //        if (securityAnnotation instanceof DenyAll) {
+    //            return Optional.of(new DenyAllCheck());
+    //        }
+    //        if (securityAnnotation instanceof RolesAllowed) {
+    //            RolesAllowed rolesAllowed = (RolesAllowed) securityAnnotation;
+    //            return Optional.of(new RolesAllowedCheck(rolesAllowed.value()));
+    //        }
+    //        if (securityAnnotation instanceof PermitAll) {
+    //            return Optional.of(new PermitAllCheck());
+    //        }
+    //        if (securityAnnotation instanceof Authenticated) {
+    //            return Optional.of(new AuthenticatedCheck());
+    //        }
+    //        return Optional.empty();
+    //    }
 
     private Annotation determineSecurityAnnotationFromBindings(Collection<Annotation> interceptorBindings,
             Supplier<String> annotationPlacement) {
@@ -130,59 +143,59 @@ public class SecurityConstrainer {
         }
     }
 
-    private static class RolesAllowedCheck implements Check {
-        private final String[] allowedRoles;
+    //    private static class RolesAllowedCheck implements Check {
+    //        private final String[] allowedRoles;
+    //
+    //        private RolesAllowedCheck(String[] allowedRoles) {
+    //            this.allowedRoles = allowedRoles;
+    //        }
+    //
+    //        @Override
+    //        public void apply(SecurityIdentity identity) {
+    //            Set<String> roles = identity.getRoles();
+    //            if (roles != null) {
+    //                for (String role : allowedRoles) {
+    //                    if (roles.contains(role)) {
+    //                        return;
+    //                    }
+    //                }
+    //            }
+    //            if (identity.isAnonymous()) {
+    //                throw new UnauthorizedException();
+    //            } else {
+    //                throw new ForbiddenException();
+    //            }
+    //        }
+    //    }
+    //
+    //    private static class DenyAllCheck implements Check {
+    //        @Override
+    //        public void apply(SecurityIdentity identity) {
+    //            if (identity.isAnonymous()) {
+    //                throw new UnauthorizedException();
+    //            } else {
+    //                throw new ForbiddenException();
+    //            }
+    //        }
+    //    }
+    //
+    //    private static class PermitAllCheck implements Check {
+    //        @Override
+    //        public void apply(SecurityIdentity identity) {
+    //        }
+    //    }
+    //
+    //    private static class AuthenticatedCheck implements Check {
+    //
+    //        @Override
+    //        public void apply(SecurityIdentity identity) {
+    //            if (identity.isAnonymous()) {
+    //                throw new UnauthorizedException();
+    //            }
+    //        }
+    //    }
 
-        private RolesAllowedCheck(String[] allowedRoles) {
-            this.allowedRoles = allowedRoles;
-        }
-
-        @Override
-        public void apply(SecurityIdentity identity) {
-            Set<String> roles = identity.getRoles();
-            if (roles != null) {
-                for (String role : allowedRoles) {
-                    if (roles.contains(role)) {
-                        return;
-                    }
-                }
-            }
-            if (identity.isAnonymous()) {
-                throw new UnauthorizedException();
-            } else {
-                throw new ForbiddenException();
-            }
-        }
-    }
-
-    private static class DenyAllCheck implements Check {
-        @Override
-        public void apply(SecurityIdentity identity) {
-            if (identity.isAnonymous()) {
-                throw new UnauthorizedException();
-            } else {
-                throw new ForbiddenException();
-            }
-        }
-    }
-
-    private static class PermitAllCheck implements Check {
-        @Override
-        public void apply(SecurityIdentity identity) {
-        }
-    }
-
-    private static class AuthenticatedCheck implements Check {
-
-        @Override
-        public void apply(SecurityIdentity identity) {
-            if (identity.isAnonymous()) {
-                throw new UnauthorizedException();
-            }
-        }
-    }
-
-    private interface Check {
-        void apply(SecurityIdentity identity);
-    }
+    //    private interface Check {
+    //        void apply(SecurityIdentity identity);
+    //    }
 }

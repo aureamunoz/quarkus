@@ -22,7 +22,7 @@ public class SecurityHandler {
         if (alreadyHandled(ic)) {
             return ic.proceed();
         }
-        constrainer.checkRoles(ic.getMethod(), InterceptorBindings.getInterceptorBindings(ic));
+        constrainer.checkRoles(ic, InterceptorBindings.getInterceptorBindings(ic));
         return ic.proceed();
     }
 

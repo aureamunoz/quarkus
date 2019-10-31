@@ -166,11 +166,12 @@
         <wiremock.version>2.24.1</wiremock.version>
         <spring.version>5.1.8.RELEASE</spring.version>
         <spring-data.version>2.1.9.RELEASE</spring-data.version>
+        <spring-security.version>5.2.0.RELEASE</spring-security.version>
         <mvel2.version>2.4.4.Final</mvel2.version>
         <mockito.version>3.0.0</mockito.version>
         <jna.version>5.3.1</jna.version>
         <antlr.version>4.7.2</antlr.version>
-        <quarkus-security.version>1.0.0.Beta1</quarkus-security.version>
+        <quarkus-security.version>1.0.0.Beta2-SNAPSHOT</quarkus-security.version>
         <keycloak.version>7.0.1</keycloak.version>
     </properties>
 
@@ -2413,6 +2414,33 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-expression</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
             <!-- Keycloak -->
             <dependency>
@@ -2434,6 +2462,11 @@
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-authz-client</artifactId>
                 <version>${keycloak.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-spring-security</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

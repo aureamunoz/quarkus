@@ -1,9 +1,7 @@
-package io.quarkus.security.test.cdi;
+package io.quarkus.spring.security.deployment;
 
-import static io.quarkus.security.test.cdi.SecurityTestUtils.assertSuccess;
-import static io.quarkus.security.test.utils.IdentityMock.ADMIN;
-import static io.quarkus.security.test.utils.IdentityMock.ANONYMOUS;
-import static io.quarkus.security.test.utils.IdentityMock.USER;
+import static io.quarkus.security.test.utils.IdentityMock.*;
+import static io.quarkus.spring.security.deployment.SecurityTestUtils.assertSuccess;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,43 +11,22 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.quarkus.security.test.cdi.app.BeanWithSecuredMethods;
-import io.quarkus.security.test.cdi.app.SubclassWithDenyAll;
-import io.quarkus.security.test.cdi.app.SubclassWithPermitAll;
-import io.quarkus.security.test.cdi.app.SubclassWithoutAnnotations;
-import io.quarkus.security.test.utils.AuthData;
-import io.quarkus.security.test.utils.IdentityMock;
 import io.quarkus.test.QuarkusUnitTest;
 
-/**
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- */
-public class CDIAccessDefaultTest {
+public class SpringSecurityAccessTest {
 
     @Inject
     @Named(BeanWithSecuredMethods.NAME)
     BeanWithSecuredMethods bean;
 
     @Inject
-    @Named(SubclassWithDenyAll.NAME)
-    SubclassWithDenyAll denyAllBean;
-
-    @Inject
-    SubclassWithPermitAll permitAllBean;
-
-    @Inject
-    SubclassWithoutAnnotations unannotatedBean;
+    Subclass sonBean;
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(BeanWithSecuredMethods.class,
-                            IdentityMock.class,
-                            AuthData.class,
-                            SubclassWithDenyAll.class,
-                            SubclassWithoutAnnotations.class,
-                            SubclassWithPermitAll.class,
-                            SecurityTestUtils.class));
+                            Subclass.class));
 
     //    @Test
     //    public void shouldFailToAccessForbidden() {
@@ -89,7 +66,8 @@ public class CDIAccessDefaultTest {
 
     @Test
     public void shouldAccessInheritedAllowedMethod() {
-        assertSuccess(() -> denyAllBean.unsecuredMethod(), "accessibleForAll", ANONYMOUS, USER, ADMIN);
+        //        Assertions.assertEquals(() -> denyAllBean.unsecuredMethod(), expectedResult);
+        assertSuccess(() -> sonBean.unsecuredMethod(), "accessibleForAll", ANONYMOUS, USER, ADMIN);
     }
 
     //    @Test

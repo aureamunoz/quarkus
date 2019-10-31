@@ -126,6 +126,7 @@
 
         <!-- vault -->
         <module>vault</module>
+        <module>spring-security</module>
     </modules>
 
     <!-- Unfortunately the config below introduces a build dependency on the maven plugin
