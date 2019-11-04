@@ -1,0 +1,14 @@
+package io.quarkus.spring.security.deployment.app;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import org.springframework.security.access.annotation.Secured;
+
+@ApplicationScoped
+@Secured("admin")
+public class BeanWithSpringSecurityAnnotations extends BeanWithSpringSecurityMethodAnnotations {
+
+    public String restricted() {
+        return "accessibleForAdminOnly";
+    }
+}
