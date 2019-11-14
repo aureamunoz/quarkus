@@ -29,10 +29,15 @@ import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.index.IndexingUtil;
 import io.quarkus.gizmo.ClassOutput;
+import io.quarkus.hibernate.orm.deployment.HibernateOrmConfig;
 import io.quarkus.hibernate.orm.deployment.IgnorableNonIndexedClasses;
 import io.quarkus.spring.data.deployment.generate.SpringDataRepositoryCreator;
 
 public class SpringDataJPAProcessor {
+
+    SpringDataJPAConfig springDataJPAConfig;
+
+    HibernateOrmConfig hibernateOrmConfig;
 
     @BuildStep
     FeatureBuildItem registerFeature() {
@@ -51,6 +56,10 @@ public class SpringDataJPAProcessor {
     void build(CombinedIndexBuildItem index,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
             BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
+
+        if (springDataJPAConfig.datasource.data.isPresent()) {
+            hibernateOrmConfig.sqlLoadScript = springDataJPAConfig.datasource.data;
+        }
 
         IndexView indexIndex = index.getIndex();
         List<ClassInfo> interfacesExtendingCrudRepository = getAllInterfacesExtending(DotNames.SUPPORTED_REPOSITORIES,
