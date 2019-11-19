@@ -1,8 +1,8 @@
 package io.quarkus.spring.security.deployment;
 
-import static io.quarkus.spring.security.deployment.SpringSecurityTransformerUtils.*;
-
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
@@ -38,6 +38,8 @@ class SpringSecurityProcessor {
     @BuildStep
     void addSpringSecuredSecurityCheck(ApplicationIndexBuildItem index,
             BuildProducer<AdditionalSecurityCheckBuildItem> additionalSecurityCheckBuildItems) {
+
+        Set<MethodInfo> methodsWithSecurityAnnotation = new HashSet<>();
         for (AnnotationInstance instance : index.getIndex().getAnnotations(DotNames.SPRING_SECURED)) {
             if (instance.value() == null) {
                 continue;
@@ -45,15 +47,17 @@ class SpringSecurityProcessor {
             String[] rolesAllowed = instance.value().asStringArray();
 
             if (instance.target().kind() == AnnotationTarget.Kind.METHOD) {
-                additionalSecurityCheckBuildItems.produce(new AdditionalSecurityCheckBuildItem(instance.target().asMethod(),
+                MethodInfo methodInfo = instance.target().asMethod();
+                additionalSecurityCheckBuildItems.produce(new AdditionalSecurityCheckBuildItem(methodInfo,
                         SecurityCheckInstantiationUtil.rolesAllowedSecurityCheck(rolesAllowed)));
+                methodsWithSecurityAnnotation.add(methodInfo);
             } else if (instance.target().kind() == AnnotationTarget.Kind.CLASS) {
                 ClassInfo classInfo = instance.target().asClass();
                 for (MethodInfo methodInfo : classInfo.methods()) {
                     if (!isPublicNonStaticNonConstructor(methodInfo)) {
                         continue;
                     }
-                    if (!hasSpringSecurityAnnotation(methodInfo)) {
+                    if (!methodsWithSecurityAnnotation.contains(methodInfo)) {
                         additionalSecurityCheckBuildItems.produce(new AdditionalSecurityCheckBuildItem(methodInfo,
                                 SecurityCheckInstantiationUtil.rolesAllowedSecurityCheck(rolesAllowed)));
                     }
