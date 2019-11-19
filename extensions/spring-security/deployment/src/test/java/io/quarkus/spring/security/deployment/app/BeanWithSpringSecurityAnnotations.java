@@ -11,4 +11,9 @@ public class BeanWithSpringSecurityAnnotations extends BeanWithSpringSecurityMet
     public String restricted() {
         return "accessibleForAdminOnly";
     }
+
+    @Secured("user")
+    public String restrictedOnMethod() {
+        return "accessibleForUserOnly";
+    }
 }

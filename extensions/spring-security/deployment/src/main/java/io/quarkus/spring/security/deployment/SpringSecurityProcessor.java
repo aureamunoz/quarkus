@@ -1,5 +1,7 @@
 package io.quarkus.spring.security.deployment;
 
+import static io.quarkus.spring.security.deployment.SpringSecurityTransformerUtils.*;
+
 import java.lang.reflect.Modifier;
 
 import org.jboss.jandex.AnnotationInstance;
@@ -16,8 +18,6 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.security.deployment.AdditionalSecurityCheckBuildItem;
 import io.quarkus.security.deployment.SecurityCheckInstantiationUtil;
 import io.quarkus.spring.security.runtime.interceptor.SpringSecuredInterceptor;
-
-import static io.quarkus.spring.security.deployment.SpringSecurityTransformerUtils.*;
 
 class SpringSecurityProcessor {
 
