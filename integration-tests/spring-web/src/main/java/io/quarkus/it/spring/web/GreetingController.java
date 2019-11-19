@@ -21,6 +21,11 @@ public class GreetingController {
         this.greetingService = greetingService;
     }
 
+    @GetMapping
+    public String greet(@RequestParam String name) {
+        return greetingService.greet("hello " + name).getMessage();
+    }
+
     @GetMapping(path = "/json/{message}")
     public Greeting greet(@PathVariable String message, @RequestParam String suffix) {
         return greetingService.greet(message + suffix);
