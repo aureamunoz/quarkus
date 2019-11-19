@@ -17,6 +17,8 @@ import io.quarkus.security.deployment.AdditionalSecurityCheckBuildItem;
 import io.quarkus.security.deployment.SecurityCheckInstantiationUtil;
 import io.quarkus.spring.security.runtime.interceptor.SpringSecuredInterceptor;
 
+import static io.quarkus.spring.security.deployment.SpringSecurityTransformerUtils.*;
+
 class SpringSecurityProcessor {
 
     private static final String FEATURE = "spring-security";
@@ -51,8 +53,10 @@ class SpringSecurityProcessor {
                     if (!isPublicNonStaticNonConstructor(methodInfo)) {
                         continue;
                     }
-                    additionalSecurityCheckBuildItems.produce(new AdditionalSecurityCheckBuildItem(methodInfo,
-                            SecurityCheckInstantiationUtil.rolesAllowedSecurityCheck(rolesAllowed)));
+                    if (!hasSpringSecurityAnnotation(methodInfo)) {
+                        additionalSecurityCheckBuildItems.produce(new AdditionalSecurityCheckBuildItem(methodInfo,
+                                SecurityCheckInstantiationUtil.rolesAllowedSecurityCheck(rolesAllowed)));
+                    }
                 }
             }
         }
