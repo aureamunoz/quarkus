@@ -3,21 +3,16 @@ package io.quarkus.it.spring.data.jpa;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbProperty;
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
 @Entity
 public class Person {
@@ -103,64 +98,4 @@ public class Person {
         this.address = address;
     }
 
-    @Entity
-    @Table(name = "address")
-    public static class Address {
-        @Id
-        @GeneratedValue
-        private Long id;
-
-        @Column(name = "street_name")
-        private String streetName;
-
-        @Column(name = "street_number")
-        private String streetNumber;
-
-        @Column(name = "zip_code")
-        private String zipCode;
-
-        @JsonbTransient
-        @OneToMany(mappedBy = "address")
-        private List<Person> people;
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public String getStreetName() {
-            return streetName;
-        }
-
-        public void setStreetName(String streetName) {
-            this.streetName = streetName;
-        }
-
-        public String getStreetNumber() {
-            return streetNumber;
-        }
-
-        public void setStreetNumber(String streetNumber) {
-            this.streetNumber = streetNumber;
-        }
-
-        public String getZipCode() {
-            return zipCode;
-        }
-
-        public void setZipCode(String zipCode) {
-            this.zipCode = zipCode;
-        }
-
-        public List<Person> getPeople() {
-            return people;
-        }
-
-        public void setPeople(List<Person> people) {
-            this.people = people;
-        }
-    }
 }

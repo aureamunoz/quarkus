@@ -6,10 +6,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
-@Entity(name = "PostComment")
-@Table(name = "post_comment")
+@Entity
+//        (name = "PostComment")
+//@Table(name = "post_comment")
 public class PostComment {
 
     @Id

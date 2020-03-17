@@ -10,10 +10,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
-@Entity(name = "Post")
-@Table(name = "post")
+@Entity
+//        (name = "Post")
+//@Table(name = "post")
 public class Post {
 
     @Id
