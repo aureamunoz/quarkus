@@ -49,12 +49,25 @@ class KubernetesConfigSourceProvider implements ConfigSourceProvider {
                 if (log.isDebugEnabled()) {
                     log.debug("Attempting to read ConfigMap " + configMapName);
                 }
-                ConfigMap configMap = client.configMaps().withName(configMapName).get();
+                ConfigMap configMap = client.configMaps().inNamespace(config.namespace).withName(configMapName).get();
                 if (configMap == null) {
-                    logMissingOrFail(configMapName, client.getNamespace(), "ConfigMap", config.failOnMissingConfig);
+                    log.debug("ConfigMap " + configMapName + " does not exist in configured namespace " + config.namespace
+                            + ". Trying to read it from the current workspace " + client.getNamespace());
+                    configMap = client.configMaps().withName(configMapName).get();
+                    if (configMap == null) {
+                        logMissingOrFail(configMapName, client.getNamespace(), "ConfigMap", config.failOnMissingConfig);
+                    } else {
+                        result.addAll(
+                                configMapConfigSourceUtil.toConfigSources(configMap.getMetadata().getName(),
+                                        configMap.getData()));
+                        if (log.isDebugEnabled()) {
+                            log.debug("Done reading ConfigMap " + configMap);
+                        }
+                    }
                 } else {
                     result.addAll(
-                            configMapConfigSourceUtil.toConfigSources(configMap.getMetadata().getName(), configMap.getData()));
+                            configMapConfigSourceUtil.toConfigSources(configMap.getMetadata().getName(),
+                                    configMap.getData()));
                     if (log.isDebugEnabled()) {
                         log.debug("Done reading ConfigMap " + configMap);
                     }

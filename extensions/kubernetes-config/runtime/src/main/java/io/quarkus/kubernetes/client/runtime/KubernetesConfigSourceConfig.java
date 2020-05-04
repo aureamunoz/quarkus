@@ -28,4 +28,10 @@ public class KubernetesConfigSourceConfig {
     @ConfigItem
     public Optional<List<String>> configMaps;
 
+    /**
+     * Namespace to look for in
+     */
+    @ConfigItem
+    public String namespace;
+
 }
