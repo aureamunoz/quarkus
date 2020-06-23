@@ -1,5 +1,8 @@
 package io.quarkus.it.kubernetes.client;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
+
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
 import io.quarkus.test.kubernetes.client.KubernetesMockServerTestResource;
@@ -26,9 +29,21 @@ public class CustomKubernetesMockServerTestResource extends KubernetesMockServer
 
         mockServer.expect().get().withPath("/api/v1/namespaces/demo/configmaps/cmap3")
                 .andReturn(200, configMapBuilder("cmap3")
-                        .addToData("some.prop5", "valFromDemo")
-                        .addToData("application.yaml", "some:\n  prop5: val5FromDemo").build())
+                        .addToData("dummy", "dummyFromDemo")
+                        .addToData("some.prop1", "val1FromDemo")
+                        .addToData("some.prop2", "val2FromDemo")
+                        .addToData("some.prop5", "val5FromDemo")
+                        .addToData("application.properties", "some.prop3=val3FromDemo")
+                        .addToData("application.yaml", "some:\n  prop4: val4FromDemo").build())
                 .once();
+    }
+
+    public static void assertProperty(String propertyName, String expectedValue) {
+        given()
+                .when().get("/configMapProperties/" + propertyName)
+                .then()
+                .statusCode(200)
+                .body(is(expectedValue));
     }
 
     private ConfigMapBuilder configMapBuilder(String name) {

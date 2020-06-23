@@ -49,25 +49,20 @@ class KubernetesConfigSourceProvider implements ConfigSourceProvider {
                 if (log.isDebugEnabled()) {
                     log.debug("Attempting to read ConfigMap " + configMapName);
                 }
-                ConfigMap configMap = client.configMaps().inNamespace(config.namespace).withName(configMapName).get();
-                if (configMap == null) {
-                    log.debug("ConfigMap " + configMapName + " does not exist in configured namespace " + config.namespace
-                            + ". Trying to read it from the current workspace " + client.getNamespace());
+                ConfigMap configMap = null;
+                String namespace = "";
+                if (config.namespace.isPresent()) {
+                    namespace = config.namespace.get();
+                    configMap = client.configMaps().inNamespace(namespace).withName(configMapName).get();
+                } else {
+                    namespace = client.getNamespace();
                     configMap = client.configMaps().withName(configMapName).get();
-                    if (configMap == null) {
-                        logMissingOrFail(configMapName, client.getNamespace(), "ConfigMap", config.failOnMissingConfig);
-                    } else {
-                        result.addAll(
-                                configMapConfigSourceUtil.toConfigSources(configMap.getMetadata().getName(),
-                                        configMap.getData()));
-                        if (log.isDebugEnabled()) {
-                            log.debug("Done reading ConfigMap " + configMap);
-                        }
-                    }
+                }
+                if (configMap == null) {
+                    logMissingOrFail(configMapName, namespace, "ConfigMap", config.failOnMissingConfig);
                 } else {
                     result.addAll(
-                            configMapConfigSourceUtil.toConfigSources(configMap.getMetadata().getName(),
-                                    configMap.getData()));
+                            configMapConfigSourceUtil.toConfigSources(configMap.getMetadata().getName(), configMap.getData()));
                     if (log.isDebugEnabled()) {
                         log.debug("Done reading ConfigMap " + configMap);
                     }

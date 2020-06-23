@@ -1,7 +1,6 @@
 package io.quarkus.it.kubernetes.client;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
+import static io.quarkus.it.kubernetes.client.CustomKubernetesMockServerTestResource.assertProperty;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,14 +18,7 @@ public class ConfigMapPropertiesTest {
         assertProperty("someProp2", "val2");
         assertProperty("someProp3", "val3");
         assertProperty("someProp4", "val4");
-        assertProperty("someProp5", "val5FromDemo");
+        assertProperty("someProp5", "val5");
     }
 
-    private void assertProperty(String propertyName, String expectedValue) {
-        given()
-                .when().get("/configMapProperties/" + propertyName)
-                .then()
-                .statusCode(200)
-                .body(is(expectedValue));
-    }
 }
