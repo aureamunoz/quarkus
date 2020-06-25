@@ -28,7 +28,7 @@ public class AbsentConfigMapPropertiesTest {
             .setApplicationVersion("0.1-SNAPSHOT")
             .setRun(true)
             .setExpectExit(true)
-                        .setLogFileName("milog.log")
+            .setLogFileName("milog.log")
             .setLogRecordPredicate(
                     r -> "io.quarkus.kubernetes.client.runtime.KubernetesConfigSourceProvider".equals(r.getLoggerName()))
             .withConfigurationResource("application-demo.properties");
@@ -44,6 +44,5 @@ public class AbsentConfigMapPropertiesTest {
         List<LogRecord> buildLogRecords = prodModeTestResults.getRetainedBuildLogRecords();
         assertThat(buildLogRecords).isNotEmpty();
     }
-
 
 }
