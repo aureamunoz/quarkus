@@ -23,6 +23,8 @@ public class KubernetesMockServerTestResource implements QuarkusTestResourceLife
 
         mockServer = new KubernetesMockServer(useHttps());
         mockServer.init();
+        System.out.println("[INFO] Kubernetes Mock server started; server status: " + mockServer.getHostName() + ":"
+                + mockServer.getPort());
         try (NamespacedKubernetesClient client = mockServer.createClient()) {
             systemProps.put(Config.KUBERNETES_MASTER_SYSTEM_PROPERTY, client.getConfiguration().getMasterUrl());
         }
