@@ -17,6 +17,7 @@ public class ConfigMapPropertiesProdModeTest {
     static final QuarkusProdModeTest config = new QuarkusProdModeTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class).addClasses(ConfigMapProperties.class))
             .setApplicationName("k8s-configMaps")
+            .setRun(true)
             .setApplicationVersion("0.1-SNAPSHOT");
 
     @Test
