@@ -35,7 +35,7 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyIgnoreWarningBuildItem;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.jaxrs.spi.deployment.AdditionalJaxRsResourceMethodAnnotationsBuildItem;
-import io.quarkus.resteasy.common.deployment.EndpointValidationPredicatesBuildItem;
+import io.quarkus.resteasy.common.spi.EndpointValidationPredicatesBuildItem;
 import io.quarkus.resteasy.common.spi.ResteasyJaxrsProviderBuildItem;
 import io.quarkus.resteasy.reactive.spi.ExceptionMapperBuildItem;
 
@@ -89,7 +89,7 @@ public class SpringWebProcessor {
     }
 
     @BuildStep
-    EndpointValidationPredicatesBuildItem createSpringRestControllerPredicate() {
+    EndpointValidationPredicatesBuildItem createSpringRestControllerPredicateForClassic() {
         Predicate<ClassInfo> predicate = new Predicate<>() {
             @Override
             public boolean test(ClassInfo classInfo) {
@@ -98,6 +98,18 @@ public class SpringWebProcessor {
             }
         };
         return new EndpointValidationPredicatesBuildItem(predicate);
+    }
+
+    @BuildStep
+    io.quarkus.resteasy.reactive.common.deployment.EndpointValidationPredicatesBuildItem createSpringRestControllerPredicateForReactive() {
+        Predicate<ClassInfo> predicate = new Predicate<>() {
+            @Override
+            public boolean test(ClassInfo classInfo) {
+                return classInfo
+                        .declaredAnnotation(REST_CONTROLLER_ANNOTATION) == null;
+            }
+        };
+        return new io.quarkus.resteasy.reactive.common.deployment.EndpointValidationPredicatesBuildItem(predicate);
     }
 
     @BuildStep

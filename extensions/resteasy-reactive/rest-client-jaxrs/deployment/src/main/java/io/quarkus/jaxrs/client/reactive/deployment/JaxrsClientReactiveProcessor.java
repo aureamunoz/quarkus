@@ -171,8 +171,8 @@ import io.quarkus.jaxrs.client.reactive.runtime.ParameterDescriptorFromClassSupp
 import io.quarkus.jaxrs.client.reactive.runtime.RestClientBase;
 import io.quarkus.jaxrs.client.reactive.runtime.ToObjectArray;
 import io.quarkus.jaxrs.client.reactive.runtime.impl.MultipartResponseDataBase;
-import io.quarkus.resteasy.common.deployment.EndpointValidationPredicatesBuildItem;
 import io.quarkus.resteasy.reactive.common.deployment.ApplicationResultBuildItem;
+import io.quarkus.resteasy.reactive.common.deployment.EndpointValidationPredicatesBuildItem;
 import io.quarkus.resteasy.reactive.common.deployment.ParameterContainersBuildItem;
 import io.quarkus.resteasy.reactive.common.deployment.QuarkusFactoryCreator;
 import io.quarkus.resteasy.reactive.common.deployment.QuarkusResteasyReactiveDotNames;
