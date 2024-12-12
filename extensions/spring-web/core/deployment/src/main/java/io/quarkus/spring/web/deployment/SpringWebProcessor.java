@@ -101,7 +101,7 @@ public class SpringWebProcessor {
     }
 
     @BuildStep
-    io.quarkus.resteasy.reactive.common.deployment.EndpointValidationPredicatesBuildItem createSpringRestControllerPredicateForReactive() {
+    io.quarkus.resteasy.reactive.spi.EndpointValidationPredicatesBuildItem createSpringRestControllerPredicateForReactive() {
         Predicate<ClassInfo> predicate = new Predicate<>() {
             @Override
             public boolean test(ClassInfo classInfo) {
@@ -109,7 +109,7 @@ public class SpringWebProcessor {
                         .declaredAnnotation(REST_CONTROLLER_ANNOTATION) == null;
             }
         };
-        return new io.quarkus.resteasy.reactive.common.deployment.EndpointValidationPredicatesBuildItem(predicate);
+        return new io.quarkus.resteasy.reactive.spi.EndpointValidationPredicatesBuildItem(predicate);
     }
 
     @BuildStep

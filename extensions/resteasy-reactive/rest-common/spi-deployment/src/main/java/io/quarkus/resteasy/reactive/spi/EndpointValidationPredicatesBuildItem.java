@@ -1,4 +1,4 @@
-package io.quarkus.resteasy.reactive.common.deployment;
+package io.quarkus.resteasy.reactive.spi;
 
 import java.util.function.Predicate;
 

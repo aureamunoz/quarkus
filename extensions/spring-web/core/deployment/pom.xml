@@ -44,10 +44,6 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-common-spi</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-rest-common-deployment</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
