@@ -142,7 +142,7 @@ public class UberJarBuilder extends AbstractJarBuilder<JarBuildItem> {
 
     private void buildUberJar0(Path runnerJar) throws IOException {
         try (ZipFileSystemArchiveCreator archiveCreator = new ZipFileSystemArchiveCreator(runnerJar,
-                packageConfig.jar().compress())) {
+                packageConfig.jar().compress(), packageConfig.outputTimestamp().orElse(null))) {
             LOG.info("Building uber jar: " + runnerJar);
 
             final Map<String, String> seen = new HashMap<>();
@@ -318,6 +318,7 @@ public class UberJarBuilder extends AbstractJarBuilder<JarBuildItem> {
                 "META-INF/jandex.idx",
                 "META-INF/panache-archive.marker", // deprecated and unused, but still present in some archives
                 "META-INF/build.metadata", // present in the Red Hat Build of Quarkus
+                "META-INF/quarkus-config-doc/quarkus-config-javadoc.json",
                 "LICENSE");
 
         @Override
